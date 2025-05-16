@@ -161,3 +161,54 @@ class RateLimitError(APIException):
             code=code,
             context=merged_context
         )
+        
+        
+class BaseAppException(Exception):
+    """Base exception for all application exceptions."""
+    
+    def __init__(
+        self, 
+        message: str, 
+        status_code: int = 500,
+        error_code: Optional[str] = None,
+        details: Optional[Dict[str, Any]] = None
+    ):
+        """
+        Initialize the exception.
+        
+        Args:
+            message: Error message
+            status_code: HTTP status code
+            error_code: Application-specific error code
+            details: Additional error details
+        """
+        self.message = message
+        self.status_code = status_code
+        self.error_code = error_code
+        self.details = details or {}
+        super().__init__(message)
+
+
+class TokenRefreshError(AuthenticationError):
+    """Exception raised for token refresh errors."""
+    
+    def __init__(
+        self, 
+        message: str, 
+        status_code: int = 401,
+        error_code: Optional[str] = "TOKEN_REFRESH_ERROR",
+        details: Optional[Dict[str, Any]] = None
+    ):
+        super().__init__(message, status_code, error_code, details)
+
+class CacheError(BaseAppException):
+    """Exception raised for cache errors."""
+    
+    def __init__(
+        self, 
+        message: str, 
+        status_code: int = 500,
+        error_code: Optional[str] = "CACHE_ERROR",
+        details: Optional[Dict[str, Any]] = None
+    ):
+        super().__init__(message, status_code, error_code, details)     
